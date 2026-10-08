@@ -1,0 +1,22 @@
+% Identity, semantic colors and palette loading.
+\usefonttheme{serif}
+\useoutertheme{miniframes}
+\newcommand{\ABIdentity}{}
+\newcommand{\ABLogo}{}
+\newcommand{\AcademicIdentity}[1]{\renewcommand{\ABIdentity}{#1}}
+\newcommand{\AcademicLogo}[1]{\renewcommand{\ABLogo}{#1}}
+\newcommand{\AcademicColors}[2]{%
+  \definecolor{ABAccent}{RGB}{#1}\definecolor{ABInk}{RGB}{#2}%
+  \colorlet{ABOutline}{ABInk!25!white}%
+  \setbeamercolor{structure}{fg=ABInk}%
+  \setbeamercolor{block title}{fg=ABInk,bg=ABAccent!18}%
+  \setbeamercolor{block body}{fg=black,bg=ABAccent!4}%
+  \setbeamercolor{block title alerted}{fg=ABInk,bg=ABAccent!30}%
+  \setbeamercolor{block body alerted}{fg=black,bg=ABAccent!7}%
+  \setbeamercolor{section in head/foot}{fg=ABInk,bg=}%
+  \setbeamercolor{mini frame}{fg=ABInk,bg=ABAccent}%
+  \setbeamercolor{AB footline}{fg=ABInk,bg=}%
+}
+\newcommand{\AcademicPalette}[1]{\ABLoadDesignFile{palettes}{#1}}
+\AcademicPalette{skku}
+\definecolor{ABMuted}{RGB}{83,91,99}

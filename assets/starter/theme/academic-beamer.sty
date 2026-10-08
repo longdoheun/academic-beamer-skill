@@ -1,0 +1,21 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{theme/academic-beamer}[2026/10/08 v0.4 Extensible academic layouts]
+\RequirePackage{amsmath,amssymb,graphicx,booktabs,tabularx,array,colortbl,tikz}
+\RequirePackage{expl3,xparse}
+\RequirePackage{appendixnumberbeamer}
+% Stable facade: keep content APIs independent of design implementations.
+\ExplSyntaxOn
+\NewDocumentCommand{\ABLoadDesignFile}{m m}{
+  \regex_match:nnTF {\A[a-z][a-z0-9-]*\Z}{#2}
+    {\InputIfFileExists{theme/#1/#2.tex}{}
+      {\PackageError{academic-beamer}{Unknown~#1~#2}
+        {Add~the~named~file~under~theme/#1/~or~choose~an~existing~design.}}}
+    {\PackageError{academic-beamer}{Invalid~design~identifier}
+      {Use~lowercase~letters,~digits~and~hyphens,~starting~with~a~letter.}}
+}
+\ExplSyntaxOff
+\input{theme/parts/palette.tex}
+\input{theme/parts/layout.tex}
+\input{theme/parts/components.tex}
+\NewDocumentCommand{\AcademicPreset}{m}{\ABLoadDesignFile{presets}{#1}}
+\makeatletter\@onlypreamble\AcademicPreset\makeatother

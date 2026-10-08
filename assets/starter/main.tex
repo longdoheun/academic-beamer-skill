@@ -1,0 +1,189 @@
+\documentclass[10pt,aspectratio=169,compress]{beamer}
+\usepackage[english]{babel}
+\IfFileExists{kotex.sty}{\usepackage{kotex}\newif\ifABKorean\ABKoreantrue}{\newif\ifABKorean\ABKoreanfalse}
+\usepackage{amsmath,amssymb}
+\IfFileExists{newtxtext.sty}{\usepackage{newtxtext,newtxmath}}{}
+\usepackage{theme/academic-beamer}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\input{config}
+\hypersetup{pdftitle={Academic Beamer layout examples},pdfauthor={Illustrative authors}}
+\begin{document}
+\AcademicTitleFrame
+\AcademicOutline
+\section[Question]{Research Question}
+\begin{frame}{Research Question}
+  \begin{GridRow}
+    \GridBlank{1}
+    \begin{GridCell}{4}
+      \vspace{9mm}\centering
+      {\fontsize{16}{20}\selectfont How does a large income payment reach local markets?\par}
+      \vspace{5mm}
+      \ifABKorean 연구질문을 한 문장으로 전달하고, 여백을 남깁니다.\else
+      A focused question can stand on its own.\fi
+    \end{GridCell}
+    \GridBlank{1}
+  \end{GridRow}
+\end{frame}
+\section[Data]{Data}
+\begin{frame}{Data Sources}
+  \begin{GridRow}
+    \begin{GridCell}{2}
+      \begin{block}{Movement}
+        \begin{itemize}\setlength\itemsep{1mm}
+          \item \ifABKorean 근로자의 거주지역\else Residential origins\fi
+          \item \ifABKorean 직장과 통근 연결\else Workplace links\fi
+        \end{itemize}
+      \end{block}
+    \end{GridCell}
+    \begin{GridCell}{2}
+      \begin{block}{Local sales}
+        \begin{itemize}\setlength\itemsep{1mm}
+          \item \ifABKorean 가맹점 소재지 매출\else Merchant location\fi
+          \item \ifABKorean 월별 소비 변화\else Monthly outcomes\fi
+        \end{itemize}
+      \end{block}
+    \end{GridCell}
+    \begin{GridCell}{2}
+      \begin{block}{Background}
+        \begin{itemize}\setlength\itemsep{1mm}
+          \item \ifABKorean 지역 인구 구성\else Population\fi
+          \item \ifABKorean 주거환경과 특성\else Housing conditions\fi
+        \end{itemize}
+      \end{block}
+    \end{GridCell}
+  \end{GridRow}
+  \ifABKorean\small 세 자료의 관측 단위와 역할을 구분합니다.\else
+  \small Distinguish what each source actually measures.\fi
+  \AcademicNote{These sources and all values in this deck are illustrative.}
+\end{frame}
+\begin{frame}{Summary Statistics}
+  \begin{GridRow}
+    \begin{GridCell}{6}
+      \begin{AcademicStatTable}{Xrrr}
+        \textbf{Variable} & \textbf{Mean} & \textbf{SD} & \textbf{Units}\\\midrule
+        \multicolumn{4}{l}{\textbf{Panel A: Exposure and population}}\\\addlinespace[1mm]
+        Exposure & 0.32 & 0.74 & Percent\\
+        Population & 18.4 & 9.7 & Thousands\\
+        \addlinespace[2mm]
+        \multicolumn{4}{l}{\textbf{Panel B: Outcome}}\\\addlinespace[1mm]
+        Monthly sales & 4.8 & 2.1 & Index units\\
+      \end{AcademicStatTable}
+    \end{GridCell}
+  \end{GridRow}
+  \begin{itemize}\setlength\itemsep{2mm}
+    \item A common sample connects exposure and outcomes.
+    \item Summary statistics follow the data definitions.
+  \end{itemize}
+  \AcademicNote{Synthetic example only. These numbers are not research findings.}
+\end{frame}
+\begin{frame}{Measurement Concepts}
+  \begin{GridRow}
+    \begin{GridCell}{6}
+      \begin{AcademicRelationTable}{>{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X}
+        \AcademicTableHeading{Concept} & \AcademicTableHeading{What is observed} & \AcademicTableHeading{Interpretation}\\[1mm]
+        \AcademicTableLabel{Household spending} &
+          \ifABKorean 가구가 지출한 소비\else Purchases by a household\fi &
+          \ifABKorean 개인 소비 반응\else Household consumption response\fi\\[2mm]
+        \AcademicTableLabel{Local merchant sales} &
+          \ifABKorean 지역 가맹점에서 발생한 매출\else Sales at local merchants\fi &
+          \ifABKorean 지역 상권에 남은 소비\else Local-market footprint\fi\\[2mm]
+        \AcademicTableLabel{Vehicle registration} &
+          \ifABKorean 거주지 기준 신규등록\else Registrations by residence\fi &
+          \ifABKorean 내구재 구매의 보완 지표\else Complementary durable-goods measure\fi\\
+      \end{AcademicRelationTable}
+    \end{GridCell}
+  \end{GridRow}
+  \AcademicNote{Illustrative comparison. Accent labels and whitespace organize concepts; no rules or background fills.}
+\end{frame}
+\section[Measurement]{Measurement}
+\begin{frame}{Income and the Local-Sales Footprint}
+  \begin{GridRow}
+    \begin{GridCell}{6}
+      \begin{block}{An accounting framework}
+        \AcademicEquation{\Delta Y_{rh}=q_{rh}\lambda_{rh}m_{rh}F_r+G_{rh}}
+        \ifABKorean
+          $F_r$: 지역에 배분된 소득, $G_{rh}$: 기타 지역 변화\\[2mm]
+          $m$: 소비 전환, $\lambda$: 지역 내 지출, $q$: 자료 포착 비중
+        \else
+          $F_r$: allocated income; $G_{rh}$: other local changes.\\[2mm]
+          $m$: consumption share; $\lambda$: local share; $q$: observed share.
+        \fi
+      \end{block}
+    \end{GridCell}
+  \end{GridRow}
+  \small An accounting identity does not identify each behavioral parameter.
+\end{frame}
+\section[Evidence]{Evidence}
+\begin{frame}{An Illustrative Outcome Path}
+  \begin{GridRow}
+    \begin{GridCell}{4}
+      \begin{AcademicFigurePanel}{Observed and Comparison Paths}{Illustrative monthly index; both paths are code-generated.}
+      \centering
+      \begin{tikzpicture}
+        \begin{axis}[width=\linewidth,height=40mm,scale only axis=false,
+          xmin=1,xmax=8,ymin=90,ymax=112,
+          xlabel={Month},ylabel={Index},
+          tick label style={font=\footnotesize},label style={font=\small},
+          legend style={font=\scriptsize,draw=none,at={(0.02,0.98)},anchor=north west},
+          axis lines=left,grid=major,grid style={gray!15}]
+          \addplot[ABInk,thick]coordinates{(1,96)(2,98)(3,100)(4,102)(5,108)(6,106)(7,102)(8,101)};
+          \addlegendentry{Observed}
+          \addplot[blue!65!black,thick,dashed]coordinates{(1,97)(2,98)(3,100)(4,101)(5,103)(6,102)(7,101)(8,100)};
+          \addlegendentry{Comparison}
+        \end{axis}
+      \end{tikzpicture}
+      \end{AcademicFigurePanel}
+    \end{GridCell}
+    \begin{GridCell}{2}
+      \begin{alertblock}{Timing}
+        \ifABKorean 지급 이전과 이후의 경로를 함께 봅니다.\else
+          Compare the path before and after payment.\fi
+      \end{alertblock}
+      \vspace{2mm}\small
+      \ifABKorean 관측과 가설을 구분합니다.\else
+      Separate observations from explanations.\fi
+    \end{GridCell}
+  \end{GridRow}
+  \AcademicNote{Illustrative data only; no empirical or causal claim.}
+\end{frame}
+\begin{frame}{Conclusion}
+  \begin{GridRow}
+    \begin{GridCell}{3}
+      \begin{alertblock}{Answer}
+        Return to the original question and summarize the supported finding.
+      \end{alertblock}
+    \end{GridCell}
+    \begin{GridCell}{3}
+      \begin{block}{Possible mechanism}
+        State an explanation as a hypothesis unless the study identifies it.
+      \end{block}
+    \end{GridCell}
+  \end{GridRow}
+  \AcademicNote{Use only conclusions supported by the actual study.}
+\end{frame}
+\begin{frame}\centering\LARGE Thank you\\[5mm]\large Q\&A\end{frame}
+\AcademicAppendix
+\begin{frame}{Appendix Outline}
+  \begin{itemize}\setlength\itemsep{3mm}
+    \item Data and definitions
+    \item Identification diagnostics
+    \item Additional results and references
+  \end{itemize}
+\end{frame}
+\begin{frame}{An Illustrative Estimation Table}
+  \begin{GridRow}
+    \begin{GridCell}{6}
+      \begin{AcademicStatTable}{Xrr}
+        & \textbf{(1)} & \textbf{(2)}\\
+        & Baseline & Alternative\\\midrule
+        Exposure coefficient & 0.12 & 0.08\\
+        & (0.09) & (0.11)\\\addlinespace[2mm]
+        Observations & 1,200 & 1,180\\
+        Fixed effects & Yes & Yes\\
+      \end{AcademicStatTable}
+    \end{GridCell}
+  \end{GridRow}
+  \AcademicNote{Synthetic example only. Parentheses illustrate standard errors; no empirical inference or significance is implied.}
+\end{frame}
+\end{document}

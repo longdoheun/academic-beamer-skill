@@ -1,0 +1,15 @@
+.build/
+.layout-tests/
+output/
+__pycache__/
+*.pyc
+.DS_Store
+*.aux
+*.log
+*.nav
+*.snm
+*.toc
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz

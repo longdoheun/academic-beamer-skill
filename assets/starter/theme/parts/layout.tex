@@ -1,0 +1,228 @@
+% Common geometry, measured content and validation. Do not fork per preset.
+\newlength{\ABPaddingX}\setlength{\ABPaddingX}{3mm}
+\newlength{\ABPaddingTitle}\setlength{\ABPaddingTitle}{1.5mm}
+\newlength{\ABPaddingBody}\setlength{\ABPaddingBody}{2.2mm}
+\newlength{\ABRadius}\setlength{\ABRadius}{1.4mm}
+\newlength{\ABEquationGap}\setlength{\ABEquationGap}{4mm}
+\newlength{\ABBlockEquationGap}\setlength{\ABBlockEquationGap}{4.5mm}
+\newlength{\ABEquationSize}\setlength{\ABEquationSize}{12pt}
+\newlength{\ABEquationLeading}\setlength{\ABEquationLeading}{15pt}
+\newif\ifABInBlock
+\newlength{\ABTitleTop}\setlength{\ABTitleTop}{22mm}
+\newcommand{\ABKoreanScale}{0.92}
+\newcommand{\ABKoreanBodyScale}{0.90}
+\newcommand{\ABKoreanBlockScale}{0.87}
+\ExplSyntaxOn
+\int_new:N \l_ab_columns_int
+\int_set:Nn \l_ab_columns_int {6}
+\int_new:N \g_ab_used_int
+\dim_new:N \l_ab_left_dim
+\dim_new:N \l_ab_right_dim
+\dim_new:N \l_ab_gutter_dim
+\dim_new:N \l_ab_rowgap_dim
+\dim_new:N \l_ab_maxheight_dim
+\dim_new:N \l_ab_usable_dim
+\dim_new:N \l_ab_track_dim
+\dim_new:N \l_ab_cell_dim
+\box_new:N \l_ab_row_box
+\box_new:N \l_ab_equation_box
+\bool_new:N \l_ab_inrow_bool
+\dim_set:Nn \l_ab_left_dim {7mm}
+\dim_set:Nn \l_ab_right_dim {7mm}
+\dim_set:Nn \l_ab_gutter_dim {6mm}
+\dim_set:Nn \l_ab_rowgap_dim {3mm}
+\dim_set:Nn \l_ab_maxheight_dim {55mm}
+\msg_new:nnn {academic-beamer}{invalid}{Academic~Beamer:~#1}
+\keys_define:nn {academic-beamer/layout}{
+  columns .int_set:N = \l_ab_columns_int,
+  margin-left .dim_set:N = \l_ab_left_dim,
+  margin-right .dim_set:N = \l_ab_right_dim,
+  gutter .dim_set:N = \l_ab_gutter_dim,
+  row-gap .dim_set:N = \l_ab_rowgap_dim,
+  max-row-height .dim_set:N = \l_ab_maxheight_dim,
+  padding-x .dim_set:N = \ABPaddingX,
+  padding-title .dim_set:N = \ABPaddingTitle,
+  padding-body .dim_set:N = \ABPaddingBody,
+  radius .dim_set:N = \ABRadius,
+  equation-gap .dim_set:N = \ABEquationGap,
+  block-equation-gap .dim_set:N = \ABBlockEquationGap,
+  equation-size .dim_set:N = \ABEquationSize,
+  equation-leading .dim_set:N = \ABEquationLeading,
+  title-top .dim_set:N = \ABTitleTop,
+  korean-scale .code:n = {\renewcommand{\ABKoreanScale}{#1}},
+  korean-body-scale .code:n = {\renewcommand{\ABKoreanBodyScale}{#1}},
+  korean-block-scale .code:n = {\renewcommand{\ABKoreanBlockScale}{#1}},
+}
+\keys_define:nn {academic-beamer/row}{columns .int_set:N = \l_ab_columns_int}
+\cs_new_protected:Npn \ab_calculate: {
+  \int_compare:nNnT {\l_ab_columns_int} < {1}
+    {\msg_error:nnn {academic-beamer}{invalid}{columns~must~be~positive}}
+  \dim_compare:nNnT {\l_ab_usable_dim} < {1sp}
+    {\msg_error:nnn {academic-beamer}{invalid}{usable~width~must~be~positive}}
+  \dim_compare:nNnT {\l_ab_gutter_dim} < {0pt}
+    {\msg_error:nnn {academic-beamer}{invalid}{gutter~must~be~nonnegative}}
+  \dim_set:Nn \l_ab_track_dim
+    {(\l_ab_usable_dim-\int_eval:n {\l_ab_columns_int-1}\l_ab_gutter_dim)/\l_ab_columns_int}
+  \dim_compare:nNnT {\l_ab_track_dim} < {1sp}
+    {\msg_error:nnn {academic-beamer}{invalid}{track~width~must~be~positive}}
+}
+\NewDocumentCommand{\LayoutSetup}{m}{
+  \keys_set:nn {academic-beamer/layout}{#1}
+  \clist_map_inline:nn {\l_ab_left_dim,\l_ab_right_dim,\l_ab_rowgap_dim,
+    \ABPaddingX,\ABPaddingTitle,\ABPaddingBody,\ABRadius,\ABEquationGap,\ABBlockEquationGap,\ABTitleTop}{
+      \dim_compare:nNnT {##1} < {0pt}
+        {\msg_error:nnn {academic-beamer}{invalid}{spacing~must~be~nonnegative}}}
+  \dim_compare:nNnT {\l_ab_maxheight_dim} < {1sp}
+    {\msg_error:nnn {academic-beamer}{invalid}{max-row-height~must~be~positive}}
+  \fp_compare:nNnT {\ABKoreanScale} < {0.1}
+    {\msg_error:nnn {academic-beamer}{invalid}{korean-scale~must~be~positive}}
+  \fp_compare:nNnT {\ABKoreanBodyScale} < {0.1}
+    {\msg_error:nnn {academic-beamer}{invalid}{korean-body-scale~must~be~positive}}
+  \fp_compare:nNnT {\ABKoreanBlockScale} < {0.1}
+    {\msg_error:nnn {academic-beamer}{invalid}{korean-block-scale~must~be~positive}}
+  \dim_compare:nNnT {\ABEquationSize} < {1sp}
+    {\msg_error:nnn {academic-beamer}{invalid}{equation-size~must~be~positive}}
+  \dim_compare:nNnT {\ABEquationLeading} < {\ABEquationSize}
+    {\msg_error:nnn {academic-beamer}{invalid}{equation-leading~must~not~be~smaller~than~equation-size}}
+  \dim_set:Nn \l_ab_usable_dim {\paperwidth-\l_ab_left_dim-\l_ab_right_dim}
+  \ab_calculate:
+  \setbeamersize{text~margin~left=\l_ab_left_dim,text~margin~right=\l_ab_right_dim}
+}
+\NewExpandableDocumentCommand{\GridSpanWidth}{m}
+  {\dim_eval:n {#1\l_ab_track_dim+\int_eval:n {#1-1}\l_ab_gutter_dim}}
+\NewDocumentEnvironment{GridRow}{O{}+b}{
+  \bool_if:NT \l_ab_inrow_bool
+    {\msg_error:nnn {academic-beamer}{invalid}{nested~GridRows~are~unsupported}}
+  \group_begin:
+  \bool_set_true:N \l_ab_inrow_bool
+  \keys_set:nn {academic-beamer/row}{#1}
+  \dim_set:Nn \l_ab_usable_dim {\linewidth}
+  \ab_calculate:
+  \int_gzero:N \g_ab_used_int
+  \hbox_set:Nn \l_ab_row_box {
+    \ignorespaces #2 \unskip
+    \int_compare:nNnF {\g_ab_used_int} = {\l_ab_columns_int}
+      {\msg_error:nnn {academic-beamer}{invalid}{row~spans~must~sum~to~columns}}
+  }
+  \dim_compare:nNnT {\box_wd:N \l_ab_row_box} > {\l_ab_usable_dim+0.01pt}
+    {\msg_error:nnn {academic-beamer}{invalid}{row~width~exceeds~usable~width}}
+  \dim_compare:nNnT {\box_ht:N \l_ab_row_box+\box_dp:N \l_ab_row_box} > {\l_ab_maxheight_dim}
+    {\msg_error:nnn {academic-beamer}{invalid}{row~height~exceeds~maximum}}
+  \iow_term:x {ABGRID:~n=\int_use:N \l_ab_columns_int;
+    ~usable=\dim_use:N \l_ab_usable_dim;~track=\dim_use:N \l_ab_track_dim;
+    ~actual=\dim_eval:n {\box_wd:N \l_ab_row_box}}
+  \par\noindent\box_use:N \l_ab_row_box\par\vspace{\l_ab_rowgap_dim}
+  \group_end:
+}{ }
+\NewDocumentEnvironment{GridCell}{m+b}{
+  \bool_if:NF \l_ab_inrow_bool
+    {\msg_error:nnn {academic-beamer}{invalid}{GridCell~requires~GridRow}}
+  \regex_match:nnF {\A[1-9][0-9]*\Z}{#1}
+    {\msg_error:nnn {academic-beamer}{invalid}{span~must~be~a~positive~integer}}
+  \int_compare:nNnT {\g_ab_used_int} > {0}{\hspace*{\l_ab_gutter_dim}}
+  \int_gadd:Nn \g_ab_used_int {#1}
+  \int_compare:nNnT {\g_ab_used_int} > {\l_ab_columns_int}
+    {\msg_error:nnn {academic-beamer}{invalid}{row~spans~exceed~columns}}
+  \dim_set:Nn \l_ab_cell_dim {\GridSpanWidth{#1}}
+  \begin{minipage}[t]{\l_ab_cell_dim}\vspace{0pt}#2\end{minipage}
+  \ignorespaces
+}{\ignorespacesafterend}
+\NewDocumentCommand{\GridBlank}{m}{\begin{GridCell}{#1}\mbox{}\end{GridCell}\ignorespaces}
+\NewDocumentCommand{\AcademicEquation}{m}{
+  \hbox_set:Nn \l_ab_equation_box {
+    \fontsize{\ABEquationSize}{\ABEquationLeading}\selectfont
+    $\displaystyle #1$}
+  \dim_compare:nNnT {\box_wd:N \l_ab_equation_box} > {\linewidth}
+    {\msg_error:nnn {academic-beamer}{invalid}{equation~exceeds~local~width}}
+  \iow_term:x {ABMATH:~size=\the\ABEquationSize;~gap=
+    \ifABInBlock\the\ABBlockEquationGap\else\the\ABEquationGap\fi}
+  \par\vspace*{\ifABInBlock\ABBlockEquationGap\else\ABEquationGap\fi}
+  \noindent\hbox_to_wd:nn {\linewidth}{\hfil\box_use:N \l_ab_equation_box\hfil}\par
+  \vspace*{\ifABInBlock\ABBlockEquationGap\else\ABEquationGap\fi}
+}
+\dim_new:N \l_ab_figheight_dim
+\dim_new:N \l_ab_nativew_dim
+\dim_new:N \l_ab_nativeh_dim
+\fp_new:N \l_ab_nativefont_fp
+\fp_new:N \l_ab_minfont_fp
+\keys_define:nn {academic-beamer/figure}{
+  height .dim_set:N = \l_ab_figheight_dim,
+  native-width .dim_set:N = \l_ab_nativew_dim,
+  native-height .dim_set:N = \l_ab_nativeh_dim,
+  native-font .fp_set:N = \l_ab_nativefont_fp,
+  min-font .fp_set:N = \l_ab_minfont_fp,
+}
+\NewDocumentCommand{\AcademicFigure}{O{}m}{
+  \group_begin:
+  \dim_set:Nn \l_ab_figheight_dim {35mm}
+  \dim_zero:N \l_ab_nativew_dim\dim_zero:N \l_ab_nativeh_dim
+  \fp_zero:N \l_ab_nativefont_fp\fp_set:Nn \l_ab_minfont_fp {8}
+  \keys_set:nn {academic-beamer/figure}{#1}
+  \dim_compare:nNnT {\l_ab_figheight_dim} < {1sp}
+    {\msg_error:nnn {academic-beamer}{invalid}{figure~height~must~be~positive}}
+  \fp_compare:nNnT {\l_ab_minfont_fp} < {0.001}
+    {\msg_error:nnn {academic-beamer}{invalid}{minimum~figure~font~must~be~positive}}
+  \bool_if:nTF {
+    \dim_compare_p:nNn {\l_ab_nativew_dim} = {0pt} &&
+    \dim_compare_p:nNn {\l_ab_nativeh_dim} = {0pt} &&
+    \fp_compare_p:nNn {\l_ab_nativefont_fp} = {0}
+  }
+    {\iow_term:n {ABFIGURE:~font~readability~unverified;~inspect~render}}
+    {
+      \fp_compare:nNnT {min(\dim_to_fp:n {\l_ab_nativew_dim},\dim_to_fp:n {\l_ab_nativeh_dim},\l_ab_nativefont_fp,\l_ab_minfont_fp)} < {0.001}
+        {\msg_error:nnn {academic-beamer}{invalid}{native~figure~metadata~must~be~complete~and~positive}}
+      \fp_compare:nNnT {min(\dim_to_fp:n {\linewidth}/\dim_to_fp:n {\l_ab_nativew_dim},\dim_to_fp:n {\l_ab_figheight_dim}/\dim_to_fp:n {\l_ab_nativeh_dim})*\l_ab_nativefont_fp} < {\l_ab_minfont_fp}
+        {\msg_error:nnn {academic-beamer}{invalid}{figure~labels~would~be~unreadable}}
+    }
+  \includegraphics[width=\linewidth,height=\l_ab_figheight_dim,keepaspectratio]{#2}
+  \group_end:
+}
+\bool_new:N \l_ab_outline_start_bool
+\bool_new:N \l_ab_outline_sections_bool
+\tl_new:N \l_ab_outline_title_tl
+\tl_new:N \l_ab_outline_options_tl
+\tl_set:Nn \l_ab_outline_title_tl {Outline}
+\tl_set:Nn \l_ab_outline_options_tl {hideallsubsections}
+\keys_define:nn {academic-beamer/outline}{
+  mode .choice:,
+  mode / none .code:n = {
+    \bool_set_false:N \l_ab_outline_start_bool
+    \bool_set_false:N \l_ab_outline_sections_bool},
+  mode / start .code:n = {
+    \bool_set_true:N \l_ab_outline_start_bool
+    \bool_set_false:N \l_ab_outline_sections_bool},
+  mode / sections .code:n = {
+    \bool_set_false:N \l_ab_outline_start_bool
+    \bool_set_true:N \l_ab_outline_sections_bool},
+  mode / both .code:n = {
+    \bool_set_true:N \l_ab_outline_start_bool
+    \bool_set_true:N \l_ab_outline_sections_bool},
+  title .tl_set:N = \l_ab_outline_title_tl,
+  toc-options .tl_set:N = \l_ab_outline_options_tl,
+}
+\NewDocumentCommand{\AcademicOutlineSetup}{m}{
+  \keys_set:nn {academic-beamer/outline}{#1}}
+\cs_new_protected:Npn \ab_outline_toc:n #1 {\tableofcontents[#1]}
+\cs_new_protected:Npn \ab_outline_frame:n #1 {
+  \iow_term:n {ABOUTLINE:~frame~emitted}
+  \begin{frame}{#1}
+    \exp_args:NV \ab_outline_toc:n \l_ab_outline_options_tl
+  \end{frame}
+}
+\NewDocumentCommand{\AcademicOutline}{}{
+  \bool_if:NT \l_ab_outline_start_bool
+    {\exp_args:NV \ab_outline_frame:n \l_ab_outline_title_tl}}
+\NewDocumentCommand{\AcademicSectionOutline}{}{
+  \bool_if:NT \l_ab_outline_sections_bool {
+    \group_begin:
+    \tl_put_left:Nn \l_ab_outline_options_tl {currentsection,}
+    \exp_args:NV \ab_outline_frame:n \l_ab_outline_title_tl
+    \group_end:
+  }}
+\NewDocumentCommand{\AcademicOutlineFrame}{O{Outline}m}{
+  \group_begin:
+  \tl_set:Nn \l_ab_outline_options_tl {#2}
+  \ab_outline_frame:n {#1}
+  \group_end:
+}
+\ExplSyntaxOff

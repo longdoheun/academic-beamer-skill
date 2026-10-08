@@ -1,0 +1,179 @@
+% Default typography and rendering; custom presets may override public roles.
+\makeatletter\@onlypreamble\LayoutSetup\@onlypreamble\AcademicOutlineSetup\makeatother
+\LayoutSetup{}
+\AtBeginSection[]{\AcademicSectionOutline}
+% Font-specific correction; no Latin or mathematics scaling.
+\AtBeginDocument{%
+  \ifdefined\pdftexversion
+    \ifcsname T@LUC\endcsname
+    \makeatletter
+    \InputIfFileExists{lucnanummj.fd}{%
+      % Separate names avoid koTeX's previously cached, unscaled font instances.
+      % No spaces in size specifications: these are parsed outside an .fd file.
+      \DeclareFontFamily{LUC}{abnanumbody}{}%
+      \DeclareFontShape{LUC}{abnanumbody}{m}{n}{<-8.5>sLUC*[\ABKoreanScale]nanummjm<8.5-10.5>sLUC*[\ABKoreanBodyScale]nanummjm<10.5->sLUC*[\ABKoreanScale]nanummjm}{}%
+      \DeclareFontShape{LUC}{abnanumbody}{m}{sl}{<-8.5>sLUC*[\ABKoreanScale]nanummjmo<8.5-10.5>sLUC*[\ABKoreanBodyScale]nanummjmo<10.5->sLUC*[\ABKoreanScale]nanummjmo}{}%
+      \DeclareFontShape{LUC}{abnanumbody}{m}{it}{<->LUCssub*abnanumbody/m/sl}{}%
+      \DeclareFontShape{LUC}{abnanumbody}{bx}{n}{<-8.5>sLUC*[\ABKoreanScale]nanummjb<8.5-10.5>sLUC*[\ABKoreanBodyScale]nanummjb<10.5->sLUC*[\ABKoreanScale]nanummjb}{}%
+      \DeclareFontShape{LUC}{abnanumbody}{bx}{sl}{<-8.5>sLUC*[\ABKoreanScale]nanummjbo<8.5-10.5>sLUC*[\ABKoreanBodyScale]nanummjbo<10.5->sLUC*[\ABKoreanScale]nanummjbo}{}%
+      \DeclareFontShape{LUC}{abnanumbody}{bx}{it}{<->LUCssub*abnanumbody/bx/sl}{}%
+      \DeclareFontShape{LUC}{abnanumbody}{b}{n}{<->LUCssub*abnanumbody/bx/n}{}%
+      % A distinct family keeps the block correction local, including lists.
+      \DeclareFontFamily{LUC}{abnanummj}{}%
+      \DeclareFontShape{LUC}{abnanummj}{m}{n}{<->sLUC*[\ABKoreanBlockScale]nanummjm}{}%
+      \DeclareFontShape{LUC}{abnanummj}{m}{sl}{<->sLUC*[\ABKoreanBlockScale]nanummjmo}{}%
+      \DeclareFontShape{LUC}{abnanummj}{m}{it}{<->LUCssub*abnanummj/m/sl}{}%
+      \DeclareFontShape{LUC}{abnanummj}{bx}{n}{<->sLUC*[\ABKoreanBlockScale]nanummjb}{}%
+      \DeclareFontShape{LUC}{abnanummj}{bx}{sl}{<->sLUC*[\ABKoreanBlockScale]nanummjbo}{}%
+      \DeclareFontShape{LUC}{abnanummj}{bx}{it}{<->LUCssub*abnanummj/bx/sl}{}%
+      \DeclareFontShape{LUC}{abnanummj}{b}{n}{<->LUCssub*abnanummj/bx/n}{}%
+      \ifcsname dhucs@serifhangulfont\endcsname
+        \edef\ABCurrentHangul{\csname dhucs@serifhangulfont\endcsname}%
+        \def\ABNanumFamily{nanummj}%
+        \ifx\ABCurrentHangul\ABNanumFamily
+          \expandafter\def\csname dhucs@serifhangulfont\endcsname{abnanumbody}%
+        \fi
+      \fi
+    }{}%
+    \makeatother
+    \fi
+  \fi
+}
+\newcommand{\ABBlockKoreanFont}{%
+  \ifcsname LUC/abnanummj/m/n\endcsname
+    \ifcsname dhucs@serifhangulfont\endcsname
+      \edef\ABCurrentHangul{\csname dhucs@serifhangulfont\endcsname}%
+      \def\ABNanumFamily{abnanumbody}%
+      \ifx\ABCurrentHangul\ABNanumFamily
+        \expandafter\def\csname dhucs@serifhangulfont\endcsname{abnanummj}%
+        \typeout{ABKOREANBODY: family=abnanummj; scale=\ABKoreanBlockScale}%
+      \fi
+    \fi
+  \fi}
+\setbeamercolor{normal text}{fg=black,bg=white}
+\setbeamercolor{title}{fg=black}
+\setbeamercolor{frametitle}{fg=black,bg=}
+\setbeamerfont{normal text}{size=\fontsize{10}{12}\selectfont}
+\setbeamerfont{frametitle}{size=\fontsize{14}{16}\selectfont,series=\bfseries}
+\setbeamerfont{block title}{size=\fontsize{11}{13}\selectfont,series=\bfseries}
+\setbeamerfont{block body}{size=\fontsize{10}{12}\selectfont}
+\setbeamerfont{block title alerted}{parent=block title}
+\setbeamerfont{block body alerted}{parent=block body}
+\setbeamerfont{section in head/foot}{size=\fontsize{7}{8}\selectfont}
+\setbeamerfont{footline}{size=\fontsize{7}{8}\selectfont}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{ABInk}\small\textbullet}
+\setlength{\leftmargini}{1.1em}\setlength{\leftmarginii}{1.1em}
+\setlength{\labelsep}{.4em}
+\setbeamertemplate{frametitle}{%
+  \vspace{.5mm}\nointerlineskip
+  \begin{beamercolorbox}[wd=\textwidth]{frametitle}
+    \usebeamerfont{frametitle}\insertframetitle\strut\par
+  \end{beamercolorbox}\vspace{1mm}}
+\setbeamertemplate{background canvas}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[white](current page.south west)rectangle(current page.north east);
+    \shade[top color=ABAccent!58,bottom color=white]
+      (current page.north west)rectangle([yshift=-7mm]current page.north east);
+  \end{tikzpicture}}
+\newcommand{\ABPageLabel}{\insertframenumber/\inserttotalframenumber}
+\setbeamertemplate{footline}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \shade[top color=white,bottom color=ABAccent!58]
+      (current page.south west)rectangle([yshift=4.5mm]current page.south east);
+  \end{tikzpicture}%
+  \leavevmode\hbox{%
+    \begin{beamercolorbox}[wd=.15\paperwidth,ht=2.3ex,dp=.9ex,center]{AB footline}\usebeamerfont{footline}\insertshortauthor\end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.36\paperwidth,ht=2.3ex,dp=.9ex,center]{AB footline}\usebeamerfont{footline}\itshape\insertshorttitle\end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.30\paperwidth,ht=2.3ex,dp=.9ex,center]{AB footline}\usebeamerfont{footline}%
+      \if\relax\detokenize\expandafter{\ABLogo}\relax\else\raisebox{-.5mm}{\includegraphics[height=2.5mm]{\ABLogo}}\hspace{1mm}\fi\ABIdentity\end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.07\paperwidth,ht=2.3ex,dp=.9ex,center]{AB footline}\usebeamerfont{footline}\insertshortdate\end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=.12\paperwidth,ht=2.3ex,dp=.9ex,center]{AB footline}\usebeamerfont{footline}\ABPageLabel\end{beamercolorbox}%
+  }}
+% Inline figure notes and frame-level notes share the same visual role.
+\newcommand{\AcademicFigureTitle}[1]{\par\noindent{\fontsize{9}{11}\selectfont\bfseries\raggedright #1\par}}
+\newcommand{\AcademicFigureNote}[1]{\par\vspace{.7mm}{\fontsize{7}{8}\selectfont\color{ABMuted}\raggedright #1\par}\vspace{1.5mm}}
+% Numerical evidence: paper-style booktabs, never a resized whole table.
+\NewDocumentEnvironment{AcademicStatTable}{m +b}{%
+  \par\begingroup
+  \fontsize{9}{11}\selectfont\renewcommand{\arraystretch}{1.3}%
+  \setlength{\tabcolsep}{5pt}\arrayrulecolor{black}%
+  \begin{tabularx}{\linewidth}{@{}#1@{}}\toprule
+    #2\bottomrule
+  \end{tabularx}\par\endgroup
+}{}
+% Relationships: no rules or background fills; accent labels and spacing.
+\NewDocumentEnvironment{AcademicRelationTable}{m +b}{%
+  \par\begingroup
+  \fontsize{10}{12}\selectfont\renewcommand{\arraystretch}{1.6}%
+  \setlength{\tabcolsep}{7pt}%
+  \begin{tabularx}{\linewidth}{#1}
+    #2
+  \end{tabularx}\par\endgroup
+}{}
+% Separate column headings from row labels without adding fills or rules.
+\newcommand{\AcademicTableHeading}[1]{\textcolor{black}{\textbf{#1}}}
+\newcommand{\AcademicTableLabel}[1]{\textcolor{ABInk}{\textmd{#1}}}
+\NewDocumentEnvironment{AcademicFigurePanel}{m m +b}{%
+  \begin{minipage}[t]{\linewidth}
+    \AcademicFigureTitle{#1}\AcademicFigureNote{#2}
+    #3\par
+  \end{minipage}
+}{}
+% Use Beamer's measured bottom-note region rather than absolute overlays.
+\makeatletter
+\newcommand{\AcademicNote}[1]{%
+  \begingroup
+    \def\@thefnmark{}%
+    \setlength{\footnotesep}{.5mm}%
+    \setbeamertemplate{footnote}{\noindent\fontsize{7}{8}\selectfont\color{ABMuted}\insertfootnotetext\par}%
+    \beamer@framefootnotetext{#1}%
+  \endgroup}
+\makeatother
+\renewcommand{\footnoterule}{}
+\newsavebox{\ABBlockTitleBox}\newsavebox{\ABBlockBodyBox}
+\newlength{\ABBlockWidth}\newlength{\ABTitleHeight}\newlength{\ABBodyHeight}\newlength{\ABTotalHeight}
+\newcommand{\ABBlockBegin}[2]{%
+  \par\vspace{1.4mm}\setlength{\ABBlockWidth}{\linewidth}%
+  \usebeamercolor{#1}\colorlet{ABTitleBackground}{bg}\colorlet{ABTitleForeground}{fg}%
+  \usebeamercolor{#2}\colorlet{ABBodyBackground}{bg}\colorlet{ABBodyForeground}{fg}%
+  \ifdim\dimexpr\ABBlockWidth-2\ABPaddingX\relax>0pt\else
+    \PackageError{academic-beamer}{Block padding exceeds width}{Give the block a wider span.}\fi
+  \begin{lrbox}{\ABBlockTitleBox}\begin{minipage}{\dimexpr\ABBlockWidth-2\ABPaddingX\relax}
+    \usebeamerfont{#1}\color{ABTitleForeground}\raggedright\insertblocktitle\par
+  \end{minipage}\end{lrbox}%
+  \begin{lrbox}{\ABBlockBodyBox}\begin{minipage}{\dimexpr\ABBlockWidth-2\ABPaddingX\relax}
+    \usebeamerfont{#2}\ABInBlocktrue\ABBlockKoreanFont
+    \color{ABBodyForeground}\setlength{\leftmargini}{1.1em}%
+}
+\newcommand{\ABBlockEnd}{%
+  \par\end{minipage}\end{lrbox}%
+  \setlength{\ABTitleHeight}{\dimexpr\ht\ABBlockTitleBox+\dp\ABBlockTitleBox+2\ABPaddingTitle\relax}%
+  \setlength{\ABBodyHeight}{\dimexpr\ht\ABBlockBodyBox+\dp\ABBlockBodyBox+2\ABPaddingBody\relax}%
+  \setlength{\ABTotalHeight}{\dimexpr\ABTitleHeight+\ABBodyHeight\relax}%
+  \noindent\begin{tikzpicture}
+    \begin{scope}\clip[rounded corners=\ABRadius](0,0)rectangle(\ABBlockWidth,-\ABTotalHeight);
+      \fill[ABBodyBackground](0,0)rectangle(\ABBlockWidth,-\ABTotalHeight);
+      \fill[ABTitleBackground](0,0)rectangle(\ABBlockWidth,-\ABTitleHeight);\end{scope}
+    \draw[draw=ABOutline,line width=.4pt,rounded corners=\ABRadius]
+      (.2pt,-.2pt)rectangle(\ABBlockWidth-.2pt,-\ABTotalHeight+.2pt);
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt]at(\ABPaddingX,-\ABPaddingTitle){\usebox{\ABBlockTitleBox}};
+    \node[anchor=north west,inner sep=0pt,outer sep=0pt]at(\ABPaddingX,-\ABTitleHeight-\ABPaddingBody){\usebox{\ABBlockBodyBox}};
+  \end{tikzpicture}\par\vspace{1.2mm}}
+\setbeamertemplate{block begin}{\ABBlockBegin{block title}{block body}}
+\setbeamertemplate{block end}{\ABBlockEnd}
+\setbeamertemplate{block alerted begin}{\ABBlockBegin{block title alerted}{block body alerted}}
+\setbeamertemplate{block alerted end}{\ABBlockEnd}
+\newcommand{\AcademicTitleFrame}{%
+  \begingroup\setbeamertemplate{headline}{}%
+  \begin{frame}[t]\vspace*{\ABTitleTop}\centering
+    {\fontsize{18}{21}\selectfont\bfseries\inserttitle\par}\vspace{4mm}
+    {\fontsize{13}{16}\selectfont\insertsubtitle\par}\vspace{16mm}
+    {\fontsize{11}{13}\selectfont\insertauthor\par}\vspace{3mm}
+    {\fontsize{10}{12}\selectfont\ABIdentity\par}
+  \end{frame}\endgroup}
+\newcommand{\AcademicAppendix}{%
+  \appendix\setbeamertemplate{headline}{\vskip7mm}%
+  \renewcommand{\ABPageLabel}{Appendix~\insertframenumber}%
+  \begingroup\renewcommand{\ABPageLabel}{}%
+  \begin{frame}[noframenumbering]\centering\LARGE Appendix\end{frame}\endgroup}

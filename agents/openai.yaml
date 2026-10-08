@@ -1,0 +1,4 @@
+interface:
+  display_name: "Academic Beamer"
+  short_description: "Build grid-based bilingual academic Beamer presentations"
+  default_prompt: "Use $academic-beamer-skill to make a bilingual academic presentation with a six-column grid."
